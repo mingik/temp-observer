@@ -34,7 +34,7 @@ class ExtractionMonixApproach {
       })
       .map(line => {
         val parts = line.split(",")
-        (WSID(parts(0), parts(1)), DateLocationTemps(LocalDate.of(year, parts(2).toInt, parts(3).toInt), null, List(parts(4).toDouble))
+        (WSID(parts(0), parts(1)), DateLocationTemps(LocalDate.of(year, parts(2).toInt, parts(3).toInt), null, List(parts(4).toDouble)))
       })
 
     val all: Observable[(WSID, DateLocationTemps)] = Observable.merge(stationsObs, temperaturesObs)

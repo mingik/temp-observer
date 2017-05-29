@@ -22,7 +22,12 @@ object Visualization {
   }
 
   def findClose(locTempDist: Iterable[(Location, Double, Double)]): Option[Double] = {
-    locTempDist.find(p => p._3 <= 1000d).map(_._2)
+    val minLTD = locTempDist.minBy(ltd => ltd._3)
+    if (minLTD._3 <= 1000d)
+      Some(minLTD._2)
+    else
+      None
+    //locTempDist.find(p => p._3 <= 1000d).map(_._2)
   }
   def calcW(d: Double) = {
     1d / pow(d, p)
@@ -72,15 +77,19 @@ object Visualization {
 
     val p1 = sortedP.head
     val p2 = sortedP.tail.head
-    val delta = (value - p1._2) / (p2._2 - p1._2)
 
-    bounds(
-      Color(
-        red = p1._3.red + (round(delta * (p2._3.red - p1._3.red))).toInt,
-        green = p1._3.green + (round(delta * (p2._3.green - p1._3.green))).toInt,
-        blue = p1._3.blue + (round(delta * (p2._3.blue - p1._3.blue))).toInt
+    if (p2._1 > abs(p2._2 - p1._2)) {
+      p1._3
+    } else {
+      val delta = (value - p1._2) / (p2._2 - p1._2)
+      bounds(
+        Color(
+          red = round(p1._3.red + delta * (p2._3.red - p1._3.red)).toInt,
+          green = round(p1._3.green + delta * (p2._3.green - p1._3.green)).toInt,
+          blue = round(p1._3.blue + delta * (p2._3.blue - p1._3.blue)).toInt
+        )
       )
-    )
+    }
   }
 
   /**
@@ -95,7 +104,7 @@ object Visualization {
       x <- 0 until 360
       y <- 0 until 180
     } {
-      val loc: Location = Location(90 - y, x - 180)
+      val loc: Location = Location(90d - y, x - 180d)
       val temp = predictTemperature(temperatures, loc)
       val col: Color = interpolateColor(colors, temp)
       pixels(y * 360 + x) = Pixel(col.red, col.green, col.blue, 255)
