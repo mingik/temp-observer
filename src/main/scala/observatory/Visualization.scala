@@ -68,22 +68,25 @@ object Visualization {
       Color(min(max(c.red,0), 255), min(max(c.green,0), 255), min(max(c.blue,0), 255))
     }
 
-    val sortedP = points.map(p => (abs(p._1 - value), p._1, p._2)).toSeq.sortBy(_._1)
+    val (lessPart, greaterPart) = points.toList.sortBy(_._1).partition(_._1 < value)
 
-    val p1 = sortedP.head
-    val p2 = sortedP.tail.head
+    val lesser = lessPart.reverse.headOption
+    val greater = greaterPart.headOption
 
-    if (p2._1 > abs(p2._2 - p1._2)) {
-      p1._3
-    } else {
-      val delta = (value - p1._2) / (p2._2 - p1._2)
-      bounds(
-        Color(
-          red = round(p1._3.red + delta * (p2._3.red - p1._3.red)).toInt,
-          green = round(p1._3.green + delta * (p2._3.green - p1._3.green)).toInt,
-          blue = round(p1._3.blue + delta * (p2._3.blue - p1._3.blue)).toInt
+    (lesser, greater) match {
+      case (Some(le), Some(ge)) => {
+        val delta = (value - le._1) / (ge._1 - le._1)
+        bounds(
+          Color(
+            red = round(le._2.red + delta * (ge._2.red - le._2.red)).toInt,
+            green = round(le._2.green + delta * (ge._2.green - le._2.green)).toInt,
+            blue = round(le._2.blue + delta * (ge._2.blue - le._2.blue)).toInt
+          )
         )
-      )
+      }
+      case (Some(le), None) => le._2
+      case (None, Some(ge)) => ge._2
+      case _ => Color(0,0,0)
     }
   }
 
