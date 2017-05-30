@@ -17,30 +17,25 @@ object Visualization {
     val locationlat = toRadians(location.lat)
     val locationlon = toRadians(location.lon)
 
-    val a = pow(sin(abs(loclat - locationlat)/2), 2) + cos(loclat)*cos(locationlat)*pow(sin(abs(loclon - locationlon)/2), 2)
+    val a = pow(sin(abs(loclat - locationlat)/2), 2) + cos(loclat)*cos(locationlat)*pow(sin((loclon - locationlon)/2), 2)
     earthRadius * 2 * atan2(sqrt(a), sqrt(1 - a))
   }
 
   def findClose(locTempDist: Iterable[(Location, Double, Double)]): Option[Double] = {
-    val minLTD = locTempDist.minBy(ltd => ltd._3)
-    if (minLTD._3 <= 1000d)
-      Some(minLTD._2)
-    else
+    if (locTempDist.isEmpty) {
       None
+    } else {
+      val minLTD = locTempDist.minBy(ltd => ltd._3)
+      if (minLTD._3 <= 1000d)
+        Some(minLTD._2)
+      else
+        None
+    }
     //locTempDist.find(p => p._3 <= 1000d).map(_._2)
   }
   def calcW(d: Double) = {
     1d / pow(d, p)
   }
-
-  val temp60 = Color(255, 255, 255)
-  val temp32 = Color(255, 0, 0)
-  val temp12 = Color(255, 255 , 0)
-  val temp0 = Color(0, 255, 255)
-  val tempNeg15 = Color(0, 0, 255)
-  val tempNeg27 = Color(255, 0, 255)
-  val tempNeg50 = Color(33, 0, 107)
-  val tempNeg60 = Color(0, 0, 0)
 
   /**
     * @param temperatures Known temperatures: pairs containing a location and the temperature at this location

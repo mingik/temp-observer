@@ -19,7 +19,7 @@ object Interaction {
     val twoz = 1 << zoom
     Location(
       lat = toDegrees(atan(sinh(Pi * (1d - y * 2d / twoz)))),
-      lon = x * 360d / twoz - 180d
+      lon = (x * 360d / twoz) - 180d
     )
   }
 
@@ -35,13 +35,13 @@ object Interaction {
     val pixels: Array[Pixel] = new Array[Pixel](256 * 256)
 
     for {
-      x <- 0 until 256
-      y <- 0 until 256
+      xp <- 0 until 256
+      yp <- 0 until 256
     } {
-      val loc: Location = tileLocation(zoom, x, y)
+      val loc: Location = tileLocation(zoom, (x + xp / 256d).toInt, (y + yp / 256d).toInt)
       val temp = predictTemperature(temperatures, loc)
       val col: Color = interpolateColor(colors, temp)
-      pixels(y * 256 + x) = Pixel(col.red, col.green, col.blue, 255)
+      pixels(yp * 256 + xp) = Pixel(col.red, col.green, col.blue, 127)
     }
 
     Image(256, 256, pixels)

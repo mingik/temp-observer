@@ -20,8 +20,8 @@ object ExtractionListsApproach {
     val temperaturesList = temperaturesLines.toList
 
     // remove empty values
-    val stations = stationsList.map(line => line.split(",").toList).filterNot(stationValue => stationValue.size < 3 ||  stationValue.tail.tail.contains(""))
-    val temperatures = temperaturesList.map(line => line.split(",").toList).filterNot(tempValue => tempValue.size < 3 || tempValue.tail.tail.contains(""))
+    val stations = stationsList.map(line => line.split(",").toList).filterNot(stationValue => stationValue.size < 4 ||  stationValue.tail.tail.contains(""))
+    val temperatures = temperaturesList.map(line => line.split(",").toList).filterNot(tempValue => tempValue.size < 5 || tempValue.tail.tail.contains(""))
 
     // map to types
     val stationsTyped: List[(WSID, Location)] = stations.map(stationsParts => (WSID(stationsParts(0), stationsParts(1)), Location(stationsParts(2).toDouble, stationsParts(3).toDouble)))
